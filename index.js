@@ -28,6 +28,21 @@ var seed = Math.floor($fx.rand()*10000000000000000);
 var noise = new perlinNoise3d();
 noise.noiseSeed(seed);
 
+//read in query strings
+var qcolor1 = "AllColors";
+if(new URLSearchParams(window.location.search).get('c1')){qcolor1 = new URLSearchParams(window.location.search).get('c1')}; //colors1
+var qcolor2 = "None";
+if(new URLSearchParams(window.location.search).get('c2')){qcolor2 = new URLSearchParams(window.location.search).get('c2')}; //colors2
+var qcolor3 = "None";
+if(new URLSearchParams(window.location.search).get('c3')){qcolor3 = new URLSearchParams(window.location.search).get('c3')}; //colors3
+var qcolors = R.random_int(1,6);
+if(new URLSearchParams(window.location.search).get('c')){qcolors = new URLSearchParams(window.location.search).get('c')}; //number of colors
+var qsize = "2";
+if(new URLSearchParams(window.location.search).get('s')){qsize = new URLSearchParams(window.location.search).get('s')}; //size
+var qcomplexity = R.random_int(1,10);
+if(new URLSearchParams(window.location.search).get('d')){qcomplexity = new URLSearchParams(window.location.search).get('d')}; //size
+
+
 
 //FXparams
 
@@ -53,24 +68,25 @@ definitions = [
         id: "aspectratio",
         name: "Aspect ratio",
         type: "select",
-        default: "4:5",
-        options: {options: ["1:1", "2:5","3:5","4:5","54:86","296:420"]},
+
+        options: {options: ["1:1","circle","4:5"]},
+        //options: {options: ["1:1", "2:5","3:5","4:5","54:86","296:420"]},
     },
     {
         id: "size",
         name: "Size",
         type: "select",
-        default: "2",
+        default: qsize,
         options: {options: ["1", "2", "3"]},
     },
     {
         id: "colors",
         name: "Max # of colors",
         type: "number",
-        default: 2,
+        default: qcolors,
         options: {
             min: 1,
-            max: 12,
+            max: 6,
             step: 1,
         },  
     },
@@ -78,28 +94,27 @@ definitions = [
         id: "colors1",
         name: "Pallete 1",
         type: "select",
-        default: "AllColors",
+        default: qcolor1,
         options: {options: palleteNames},
     },
     {
         id: "colors2",
         name: "Pallete 2",
         type: "select",
-        default: "None",
+        default: qcolor2,
         options: {options: palleteNames},
     },
     {
         id: "colors3",
         name: "Pallete 3",
         type: "select",
-        default: "None",
+        default: qcolor3,
         options: {options: palleteNames},
     },
     {
         id: "framecolor",
         name: "Frame color",
         type: "select",
-        default: "White",
         options: {options: ["Random","White","Mocha"]},
     }, 
     {
@@ -115,7 +130,7 @@ definitions = [
         default: 2,
         options: {
             min: 1,
-            max: 3,
+            max: 4,
             step: 1,
         },  
     },
@@ -151,6 +166,10 @@ definitions = [
    
     ]
 
+//read in query strings
+var qcolor1 = new URLSearchParams(window.location.search).get('c1'); //colors1
+
+
 
 $fx.params(definitions)
 var scale = $fx.getParam('size');
@@ -161,7 +180,7 @@ var numofcolors = $fx.getParam('colors');
 //Set the properties for the artwork where 100 = 1 inch
 var wide = 800; 
 var high = 1000; 
-
+if ($fx.getParam('aspectratio')== "circle"){wide = 800; high = 800};
 if ($fx.getParam('aspectratio')== "1:1"){wide = 800; high = 800};
 if ($fx.getParam('aspectratio')== "2:5"){wide = 400; high = 1000};
 if ($fx.getParam('aspectratio')== "3:5"){wide = 600; high = 1000};
@@ -273,7 +292,7 @@ for (z = 0; z < stacks; z++) {
         
         //if (rotated<.5){sheet[z].rotate(90,new Point(wide/2,high/2))}
        
-        frameIt(z);// finish the layer with a final frame cleanup 
+        if ($fx.getParam('aspectratio')=="circle"){frameIt(z,1);} else {frameIt(z,0);}// finish the layer with a final frame cleanup 
 
         cutMarks(z);
         hanger(z);// add cut marks and hanger holes
@@ -446,25 +465,28 @@ function solid(z){
 
 
 
-function frameIt(z){
-        //Trim to size
-        var outsideframe = new Path.Rectangle(new Point(0, 0),new Size(wide, high), framradius)
-        //var outsideframe = new Path.Circle(new Point(wide/2, wide/2),wide/2);
-        sheet[z] = outsideframe.intersect(sheet[z]);
-        outsideframe.remove();
-        project.activeLayer.children[project.activeLayer.children.length-2].remove();
+function frameIt(z,round){
+    //Trim to size
+    var outsideframe = new Path.Rectangle(new Point(0, 0),new Size(wide, high), framradius)
+    if (round==1){var outsideframe = new Path.Circle(new Point(wide/2, wide/2),wide/2)};
+    sheet[z] = outsideframe.intersect(sheet[z]);
+    outsideframe.remove();
+    project.activeLayer.children[project.activeLayer.children.length-2].remove();
 
-        //Make sure there is still a solid frame
-        var outsideframe = new Path.Rectangle(new Point(0, 0),new Size(wide, high), framradius)
-        var insideframe = new Path.Rectangle(new Point(framewidth, framewidth),new Size(wide-framewidth*2, high-framewidth*2)) 
+    //Make sure there is still a solid frame
+    var outsideframe = new Path.Rectangle(new Point(0, 0),new Size(wide, high), framradius)
+    var insideframe = new Path.Rectangle(new Point(framewidth, framewidth),new Size(wide-framewidth*2, high-framewidth*2)) 
+    if (round==1){var outsideframe = new Path.Circle(new Point(wide/2, wide/2),wide/2);}
+    if (round==1){var insideframe = new Path.Circle(new Point(wide/2, wide/2),wide/2-framewidth);}
 
-        var frame = outsideframe.subtract(insideframe);
-        outsideframe.remove();insideframe.remove();
-        sheet[z] = sheet[z].unite(frame);
-        frame.remove();
-        project.activeLayer.children[project.activeLayer.children.length-2].remove();
-         
-        sheet[z].style = {fillColor: colors[z].Hex, strokeColor: linecolor.Hex, strokeWidth: 1*ratio,shadowColor: new Color(0,0,0,[0.3]),shadowBlur: 20,shadowOffset: new Point((stacks-z)*2.3, (stacks-z)*2.3)};
+    var frame = outsideframe.subtract(insideframe);
+    outsideframe.remove();insideframe.remove();
+    sheet[z] = sheet[z].unite(frame);
+    frame.remove();
+    project.activeLayer.children[project.activeLayer.children.length-2].remove();
+     
+    
+    sheet[z].style = {fillColor: colors[z].Hex, strokeColor: linecolor.Hex, strokeWidth: 1*ratio,shadowColor: new Color(0,0,0,[0.3]),shadowBlur: 20,shadowOffset: new Point((stacks-z)*2.3, (stacks-z)*2.3)};
 }
 
 function cutMarks(z){
