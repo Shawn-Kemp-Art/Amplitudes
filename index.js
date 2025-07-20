@@ -42,7 +42,14 @@ if(new URLSearchParams(window.location.search).get('s')){qsize = new URLSearchPa
 var qcomplexity = R.random_int(1,10);
 if(new URLSearchParams(window.location.search).get('d')){qcomplexity = new URLSearchParams(window.location.search).get('d')}; //size
 
-
+var qorientation =R.random_int(1,2) < 1 ? "portrait" : "landscape";
+var qframecolor = R.random_int(1,3) < 1 ? "White" : R.random_int(1,3) < 2 ? "Mocha" : "Random";
+var qtype = R.random_int(1,2) < 1 ? "Squiggle" : "Wave";
+var qframetype = R.random_int(1,2) < 1 ? "Circle" : "Square";
+var qcenter = R.random_int(1,1000);
+var qmatwidth = R.random_int(50,200);
+var qnwaves = R.random_int(1,4);
+var qaspectratio = R.random_int(1,3) < 1 ? "1:1" : R.random_int(1,3) < 2 ? "circle" : "4:5";
 
 //FXparams
 
@@ -62,13 +69,14 @@ definitions = [
         id: "orientation",
         name: "Orientation",
         type: "select",
+        default: qorientation,
         options: {options: ["portrait", "landscape"]},
     },
     {
         id: "aspectratio",
         name: "Aspect ratio",
         type: "select",
-
+        default: qaspectratio,
         options: {options: ["1:1","circle","4:5"]},
         //options: {options: ["1:1", "2:5","3:5","4:5","54:86","296:420"]},
     },
@@ -115,19 +123,21 @@ definitions = [
         id: "framecolor",
         name: "Frame color",
         type: "select",
+        default: qframecolor,
         options: {options: ["Random","White","Mocha"]},
     }, 
     {
         id: "type",
         name: "Type",
         type: "select",
+        default: qtype,
         options: {options: ["Squiggle","Wave"]},
     },
     {
         id: "nwaves",
         name: "Number of squiggles",
         type: "number",
-        default: 2,
+        default: qnwaves,
         options: {
             min: 1,
             max: 4,
@@ -138,13 +148,14 @@ definitions = [
         id: "frametype",
         name: "Frame Type",
         type: "select",
+        default: qframetype,
         options: {options: ["Circle","Square"]},
     },
     {
         id: "center",
         name: "Center",
         type: "number",
-        default: 400,
+        default: qcenter,
         options: {
             min: 1,
             max: 1000,
@@ -156,7 +167,7 @@ definitions = [
         id: "matwidth",
         name: "Mat size",
         type: "number",
-        default: 75,
+        default: qmatwidth,
         options: {
             min: 50,
             max: 200,
