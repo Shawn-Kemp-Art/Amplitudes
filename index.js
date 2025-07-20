@@ -47,7 +47,7 @@ var qframecolor = R.random_int(1,3) < 1 ? "White" : R.random_int(1,3) < 2 ? "Moc
 var qtype = R.random_int(1,2) < 1 ? "Squiggle" : "Wave";
 var qframetype = R.random_int(1,2) < 1 ? "Circle" : "Square";
 var qcenter = R.random_int(1,1000);
-var qmatwidth = R.random_int(50,200);
+var qmatwidth = R.random_int(50,75);
 var qnwaves = R.random_int(1,4);
 var qaspectratio = R.random_int(1,3) < 1 ? "1:1" : R.random_int(1,3) < 2 ? "circle" : "4:5";
 
