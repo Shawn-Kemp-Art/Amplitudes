@@ -43,13 +43,13 @@ var qcomplexity = R.random_int(1,10);
 if(new URLSearchParams(window.location.search).get('d')){qcomplexity = new URLSearchParams(window.location.search).get('d')}; //size
 
 var qorientation =R.random_int(1,2) < 2 ? "portrait" : "landscape";
-var qframecolor = R.random_int(1,3) < 1 ? "White" : R.random_int(1,3) < 2 ? "Mocha" : "Random";
-var qtype = R.random_int(1,2) < 1 ? "Squiggle" : "Wave";
+var qframecolor = R.random_int(0,3) < 1 ? "White" : R.random_int(1,3) < 2 ? "Mocha" : "Random";
+var qtype = "Wave"; console.log(qtype);
 var qframetype = R.random_int(1,2) < 1 ? "Circle" : "Square";
 var qcenter = R.random_int(1,1000);
 var qmatwidth = R.random_int(50,75);
 var qnwaves = R.random_int(1,4);
-var qaspectratio = R.random_int(1,3) < 1 ? "1:1" : R.random_int(1,3) < 2 ? "circle" : "4:5";
+var qaspectratio = "4:5";
 
 //FXparams
 
